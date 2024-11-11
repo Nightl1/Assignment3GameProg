@@ -282,9 +282,9 @@ mesh = SubResource("CapsuleMesh_03ik7")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/StaticBody3D" groups=["Players"]]
 shape = SubResource("ConvexPolygonShape3D_1i6wo")
 
-[node name="Area3D" type="Area3D" parent="Prisoner"]
+[node name="Hitbox" type="Area3D" parent="Prisoner"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/Hitbox"]
 shape = SubResource("CapsuleShape3D_dl5q7")
 
 [node name="PrisonGuard" parent="." node_paths=PackedStringArray("prisoner", "patrol_markers") instance=ExtResource("1_kduti")]
@@ -324,4 +324,4 @@ skeleton = NodePath("../..")
 
 [node name="Marker3D" type="Marker3D" parent="Node3D/Patrol4"]
 
-[connection signal="body_entered" from="Prisoner/Area3D" to="PrisonGuard" method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="Prisoner/Hitbox" to="PrisonGuard" method="_on_area_3d_body_entered"]

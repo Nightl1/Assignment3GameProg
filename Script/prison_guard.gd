@@ -1,7 +1,7 @@
 extends CharacterBody3D
  
 @export var walking_speed = 3.0
-@export var chasing_speed = 10.0
+@export var chasing_speed = 20.0
 @export var attack_speed = 10.0
 @export var vision_length = 100
 
@@ -16,4 +16,3 @@ extends CharacterBody3D
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body == prison_guard:
 		state_machine.transition_to("Attack")
-		
