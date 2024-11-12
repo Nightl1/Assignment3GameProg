@@ -41,7 +41,8 @@ func move_toward_marker(marker, delta):
 	prison_guard.move_and_slide()
 
 func raycast_player():
-	##print("Raycasting...")
+	if not is_prisoner_active:
+		return
 	const ray_Range = 1000
 	
 	var space_state = prison_guard.get_world_3d().direct_space_state

@@ -1,5 +1,6 @@
 extends CharacterBody3D
  
+
 @export var walking_speed = 3.0
 @export var chasing_speed = 20.0
 @export var attack_speed = 10.0
@@ -27,3 +28,5 @@ func template_4(body: Node3D) -> void:
 
 func _on_timer_timeout() -> void:
 	prisoner.queue_free()
+	state_machine.transition_to("Patrolling")
+	
