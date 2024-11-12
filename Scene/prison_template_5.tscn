@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dixftcawbjkcl"]
+[gd_scene load_steps=22 format=3 uid="uid://dixftcawbjkcl"]
 
 [ext_resource type="PackedScene" uid="uid://ct08bjxw0mayi" path="res://NPC/prison_guard/prison_guard.tscn" id="2_chtil"]
 
@@ -61,8 +61,8 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7fxam"]
 radius = 0.999882
 
-[sub_resource type="Animation" id="Animation_7b7il"]
-resource_name = "Hide_n_Seek"
+[sub_resource type="Animation" id="Animation_2v31v"]
+resource_name = "Something"
 length = 6.0
 loop_mode = 1
 tracks/0/type = "value"
@@ -78,7 +78,7 @@ tracks/0/keys = {
 "values": [Vector3(-13.2196, 1.03655, 7.07558), Vector3(0.138529, 1.03655, 7.07558)]
 }
 
-[sub_resource type="Animation" id="Animation_2w72w"]
+[sub_resource type="Animation" id="Animation_tvjkm"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -93,13 +93,11 @@ tracks/0/keys = {
 "values": [Vector3(-13.2196, 1.03655, 7.07558)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_2l6s7"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_l40cl"]
 _data = {
-"Hide_n_Seek": SubResource("Animation_7b7il"),
-"RESET": SubResource("Animation_2w72w")
+"RESET": SubResource("Animation_tvjkm"),
+"Something": SubResource("Animation_2v31v")
 }
-
-[sub_resource type="AnimationRootNode" id="AnimationRootNode_m4ojt"]
 
 [node name="PrisonTemplate4" type="Node3D"]
 
@@ -308,7 +306,7 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall7/StaticBody3D"]
 shape = SubResource("ConvexPolygonShape3D_wla2v")
 
-[node name="Prisoner" type="MeshInstance3D" parent="."]
+[node name="Prisoner" type="MeshInstance3D" parent="." groups=["Players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2196, 1.03655, 7.07558)
 mesh = SubResource("CapsuleMesh_03ik7")
 script = SubResource("GDScript_3b4sn")
@@ -316,7 +314,7 @@ script = SubResource("GDScript_3b4sn")
 [node name="StaticBody3D" type="StaticBody3D" parent="Prisoner" groups=["Players"]]
 collision_layer = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/StaticBody3D" groups=["Players"]]
 shape = SubResource("ConvexPolygonShape3D_1i6wo")
 
 [node name="Area3D" type="Area3D" parent="Prisoner"]
@@ -329,15 +327,18 @@ shape = SubResource("CylinderShape3D_7fxam")
 wait_time = 2.0
 one_shot = true
 
-[node name="AnimationTree" type="AnimationTree" parent="Prisoner"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Prisoner"]
 libraries = {
-"": SubResource("AnimationLibrary_2l6s7")
+"": SubResource("AnimationLibrary_l40cl")
 }
-tree_root = SubResource("AnimationRootNode_m4ojt")
+autoplay = "Something"
 
-[node name="PrisonGuard" parent="." instance=ExtResource("2_chtil")]
+[node name="PrisonGuard" parent="." node_paths=PackedStringArray("prisoner") instance=ExtResource("2_chtil")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04731, -1.19209e-07, -6.02696)
 walking_speed = 2.0
 chasing_speed = 4.0
+prisoner = NodePath("../Prisoner")
+
+[node name="Node3D" type="Node3D" parent="."]
 
 [connection signal="timeout" from="Prisoner/Timer" to="Prisoner" method="_on_timer_timeout"]

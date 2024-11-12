@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://d6qs5p01ay4l"]
 
-[ext_resource type="Script" path="res://Scenes/PrisonTemplates/prisoner_vanish.gd" id="1_x5vv0"]
+[ext_resource type="PackedScene" uid="uid://ct08bjxw0mayi" path="res://NPC/prison_guard/prison_guard.tscn" id="1_c2yi6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s04ua"]
 sky_top_color = Color(0.785951, 0.691533, 0.633649, 1)
@@ -47,12 +47,6 @@ albedo_color = Color(0.696854, 0.458822, 0.432043, 1)
 material = SubResource("StandardMaterial3D_2da5x")
 size = Vector3(0.2, 3, 10)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2c1s6"]
-albedo_color = Color(0.403922, 0.713726, 0.313726, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_u4yw5"]
-material = SubResource("StandardMaterial3D_2c1s6")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tg8w7"]
 albedo_color = Color(1, 0.454902, 1, 1)
 
@@ -65,7 +59,13 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7fxam"]
 radius = 0.999882
 
-[node name="PrisonTemplate4" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2c1s6"]
+albedo_color = Color(0.403922, 0.713726, 0.313726, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_u4yw5"]
+material = SubResource("StandardMaterial3D_2c1s6")
+
+[node name="PrisonTemplate5" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hnvo1")
@@ -272,31 +272,14 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall7/StaticBody3D"]
 shape = SubResource("ConvexPolygonShape3D_wla2v")
 
-[node name="Patrol1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2443, 0.54429, 8.52599)
-mesh = SubResource("SphereMesh_u4yw5")
-
-[node name="Patrol3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6226, 0.60228, 7.02507)
-mesh = SubResource("SphereMesh_u4yw5")
-
-[node name="Patrol4" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.98705, 0.834484, -8.61806)
-mesh = SubResource("SphereMesh_u4yw5")
-
-[node name="Patrol2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.78347, 0.835441, -7.65067)
-mesh = SubResource("SphereMesh_u4yw5")
-
-[node name="Prisoner" type="MeshInstance3D" parent="."]
+[node name="Prisoner" type="MeshInstance3D" parent="." groups=["Players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.93143, 1.03655, 3.31889)
 mesh = SubResource("CapsuleMesh_03ik7")
-script = ExtResource("1_x5vv0")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Prisoner" groups=["Players"]]
 collision_layer = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Prisoner/StaticBody3D" groups=["Players"]]
 shape = SubResource("ConvexPolygonShape3D_1i6wo")
 
 [node name="Area3D" type="Area3D" parent="Prisoner"]
@@ -309,5 +292,39 @@ shape = SubResource("CylinderShape3D_7fxam")
 wait_time = 2.0
 one_shot = true
 
-[connection signal="body_entered" from="Prisoner/Area3D" to="Prisoner" method="_on_area_3d_body_entered"]
-[connection signal="timeout" from="Prisoner/Timer" to="Prisoner" method="_on_timer_timeout"]
+[node name="PrisonGuard" parent="." node_paths=PackedStringArray("prisoner", "patrol_markers") instance=ExtResource("1_c2yi6")]
+prisoner = NodePath("../Prisoner")
+patrol_markers = [NodePath("../Node3D/Patrol1/Marker3D"), NodePath("../Node3D/Patrol2/Marker3D"), NodePath("../Node3D/Patrol3/Marker3D"), NodePath("../Node3D/Patrol4/Marker3D")]
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="Patrol1" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2443, 0.54429, 8.52599)
+mesh = SubResource("SphereMesh_u4yw5")
+skeleton = NodePath("../..")
+
+[node name="Marker3D" type="Marker3D" parent="Node3D/Patrol1"]
+
+[node name="Patrol2" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.78347, 0.835441, -7.65067)
+mesh = SubResource("SphereMesh_u4yw5")
+skeleton = NodePath("../..")
+
+[node name="Marker3D" type="Marker3D" parent="Node3D/Patrol2"]
+
+[node name="Patrol3" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6226, 0.60228, 7.02507)
+mesh = SubResource("SphereMesh_u4yw5")
+skeleton = NodePath("../..")
+
+[node name="Marker3D" type="Marker3D" parent="Node3D/Patrol3"]
+
+[node name="Patrol4" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.98705, 0.834484, -8.61806)
+mesh = SubResource("SphereMesh_u4yw5")
+skeleton = NodePath("../..")
+
+[node name="Marker3D" type="Marker3D" parent="Node3D/Patrol4"]
+
+[connection signal="body_entered" from="Prisoner/Area3D" to="PrisonGuard" method="template_4"]
+[connection signal="timeout" from="Prisoner/Timer" to="PrisonGuard" method="_on_timer_timeout"]
